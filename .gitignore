@@ -1,0 +1,6 @@
+.env
+knowledge.db
+SampleKnowledge_Rent/
+vector_db_v2/
+__pycache__/
+*.pyc
