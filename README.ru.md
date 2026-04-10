@@ -4,12 +4,18 @@
 
 # 🏢 Hybrid RAG · Система анализа арендных документов
 
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-0.2+-00A67E?style=for-the-badge&logo=chainlink&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--5--nano-74AA9C?style=for-the-badge&logo=openai&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector_Store-E85D04?style=for-the-badge&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-Structured_Layer-0F4C81?style=for-the-badge&logo=sqlite&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3.10+-white?style=for-the-badge&logo=python&logoColor=3776AB)
+![Jupyter](https://img.shields.io/badge/Jupyter_Notebook-white?style=for-the-badge&logo=jupyter&logoColor=F37626)
+![Anaconda](https://img.shields.io/badge/Anaconda-white?style=for-the-badge&logo=anaconda&logoColor=44A833)
+
+![OpenAI](https://img.shields.io/badge/OpenAI_GPT--5--nano-412991?style=for-the-badge&logo=openai&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-00A67E?style=for-the-badge&logo=chainlink&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-E85D04?style=for-the-badge&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-0F4C81?style=for-the-badge&logo=sqlite&logoColor=white)
+![Cohere](https://img.shields.io/badge/Cohere_Reranker-D4A853?style=for-the-badge&logoColor=white)
+
 ![Status](https://img.shields.io/badge/Status-Active_Development-2EA44F?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-brightgreen?style=for-the-badge)
 
 <br/>
 
