@@ -15,7 +15,7 @@ __English__ | [__Русский__](README.ru.md)
 
 **Hybrid RAG system with SQL routing for lease document analysis in Russian**
 
-*From legal practice to LLM Engineering. Real data. Real problems. Real solutions.*
+*From legal practice to LLM Engineering. Real data. Real problems. Real solutions*
 
 <br/>
 
