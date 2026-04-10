@@ -1,6 +1,8 @@
-# 🏢 Hybrid RAG · Система анализа арендных документов
-
 <div align="center">
+
+__English__ | [__Русский__](README.ru.md)
+
+# 🏢 Hybrid RAG · Lease Document Analysis System
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-0.2+-1C3C3C?style=for-the-badge&logo=chainlink&logoColor=white)
@@ -11,13 +13,13 @@
 
 <br/>
 
-**Гибридная RAG-система с SQL-маршрутизацией для анализа юридических документов на русском языке**
+**Hybrid RAG system with SQL routing for lease document analysis in Russian**
 
-*От юридической практики — к LLM Engineering. Реальные данные. Реальные проблемы. Реальные решения.*
+*From legal practice to LLM Engineering. Real data. Real problems. Real solutions.*
 
 <br/>
 
-[Архитектура](#-архитектура) · [Challenges & Solutions](#-challenges--solutions) · [Быстрый старт](#-быстрый-старт) · [Дорожная карта](#-дорожная-карта)
+[Architecture](#-architecture) · [Challenges & Solutions](#-challenges--solutions) · [Quick Start](#-quick-start) · [Roadmap](#-roadmap)
 
 </div>
 
@@ -25,58 +27,59 @@
 
 ## 🎯 LegalTech Challenge
 
-> Как мгновенно найти пункт об индексации в 800+ договорах, не тратя выходные на чтение сканов?
+> How do you instantly find an indexation clause across 800+ lease agreements — without spending weekends reading documents?
 
-Этот проект автоматизирует рутину управляющего недвижимостью — гарантируя **100% точность финансовых данных** за счёт разделения слоёв логики: факты идут в SQL, смысл — в векторный поиск.
+This project automates property management workflows, guaranteeing **100% accuracy on financial data** by separating logic layers: facts go to SQL, semantics go to vector search.
 
-Стандартный RAG из туториала ломается на первом же реальном документе. Одно и то же лицо встречалось в пяти формах: «ИП Иванова», «Иванова В.В.», «Иванова» — один арендатор или три? Векторный поиск не умеет отвечать «сколько платит Петров?» — он ищет похожий текст, а не точные цифры.
+Standard tutorial RAG breaks on the very first real document. The same person appears in five different forms: "IP Ivanova", "Ivanova V.V.", "Ivanova" — one tenant or three? Vector search cannot answer "how much does Petrov pay?" — it retrieves similar text, not exact figures.
 
-**как выглядит наивный RAG когда встречается с реальностью**.
+This is what happens **when naive RAG meets reality**.
 
 ---
 
-## ✨ Демонстрация
+## ✨ Demo
 
 ```python
-ask("Список арендаторов на Ленина 115?")
-# → [SQL] список арендаторов с офисами — мгновенно, без галлюцинаций
+ask("List of tenants at Lenina 115?")
+# → [SQL] tenant list with offices — instant, zero hallucinations
 
-ask("Сколько платит Петров?")
-# → [SQL] найдено: 18 800 руб./мес. из актов Excel
+ask("How much does Petrov pay?")
+# → [SQL] found: 18,800 RUB/month from Excel acts
 
-ask("Сколько платит Точка роста?")
-# → [SQL] пусто → авто-fallback → [RAG] ищет в тексте договора
+ask("How much does Tochka Rosta pay?")
+# → [SQL] empty → auto-fallback → [RAG] searches contract text
 
-ask("Условия расторжения с Кравцовым")
-# → [RAG + фильтр] только документы Кравцова, ноль чужих договоров
+ask("Termination conditions for Kravtsov")
+# → [RAG + filter] only Kravtsov's documents, zero foreign contracts
 
-ask("Площадь помещения Старлит")
-# → [RAG] находит «64.6 кв.м» в п.1.1 договора аренды декабрь 2024
+ask("Floor area for Starlit")
+# → [RAG] finds "64.6 sq.m" in clause 1.1 of December 2024 lease
 ```
 
 ---
 
-## 🏗 Архитектура
+## 🏗 Architecture
 
 ```mermaid
 graph TD
-    Q[💬 Запрос пользователя] --> R{🔀 LLM Router}
+    Q[User query] --> R{LLM Router}
 
-    R -->|"sql"| S[(🗄 SQLite\nфакты и цифры)]
-    R -->|"rag"| V[🔍 Hybrid Search]
-    R -->|"both"| S
-    R -->|"both"| V
+    R -->|sql\nfacts & figures| S[(SQLite)]
+    R -->|rag\nsemantics & terms| V[Hybrid Search\nBM25 + Vector]
+    R -->|both\nfacts + semantics| S
+    R -->|both| V
 
-    S -->|найдено| F[📝 Format via LLM]
-    S -->|"FALLBACK ↓"| V
+    S -->|found| F[Format via LLM]
+    S -->|amount = NULL\nFALLBACK| V
+    S -->|both: inject SQL facts\ninto RAG context| LLM
 
-    V --> MF[🎯 Умная фильтрация\nадрес + арендатор]
-    MF --> E[⚡ EnsembleRetriever\nBM25 × 0.4 + Vector × 0.6]
-    E -.->|платный ключ| CR[🏆 Cohere Reranker\nготов к подключению]
-    E --> LLM[🤖 LLM]
+    V --> MF[Smart Filter\naddress + tenant]
+    MF --> E[EnsembleRetriever\nBM25 × 0.4 + Vector × 0.6]
+    E -.->|paid key required| CR[Cohere Reranker\nready to connect]
+    E --> LLM[LLM · gpt-5-nano]
     CR --> LLM
 
-    F --> OUT[✅ Ответ]
+    F --> OUT[Answer]
     LLM --> OUT
 
     style R fill:#f9a825,color:#000,stroke:#e65100
@@ -84,86 +87,107 @@ graph TD
     style V fill:#2e7d32,color:#fff
     style CR fill:#eeeeee,color:#999,stroke-dasharray: 5 5
     style OUT fill:#1b5e20,color:#fff
+    style MF fill:#4a148c,color:#fff
+    style E fill:#4a148c,color:#fff
+    style F fill:#37474f,color:#fff
+    style LLM fill:#37474f,color:#fff
 ```
 
-### Принцип двух слоёв
+**When does `both` trigger?** When a query contains both a factual and a semantic component simultaneously — e.g. *"Who rents office 5 and what are the termination conditions?"*. SQL returns the tenant, RAG retrieves the contract clause, and LLM merges both into a single coherent answer.
 
-| Тип вопроса | Слой | Гарантия |
-|------------|------|----------|
-| Кто арендует? Сколько? Список? | **SQLite** | Точные цифры, нет галлюцинаций |
-| Условия договора? Пункты? Порядок? | **ChromaDB + BM25** | Смысловой поиск по тексту |
-| Кто арендует офис 5 и на каких условиях? | **SQL + RAG** | Комплексный ответ |
+### Two-layer data model
+
+| Query type | Layer | Guarantee |
+|------------|-------|-----------|
+| Who rents? How much? List? | **SQLite** | Exact figures, no hallucinations |
+| Contract terms? Clauses? Procedure? | **ChromaDB + BM25** | Semantic text retrieval |
+| Who rents office 5 and on what terms? | **SQL + RAG** | Composite answer |
+
+---
+
+## ⚙️ Indexing Pipeline
+
+The system re-indexes the entire document base on each pipeline run — any new file added to the folder is automatically picked up, parsed, and written to both SQLite and ChromaDB without manual intervention.
+
+**Under the hood:**
+
+- `os.remove(knowledge.db)` + full directory scan on every run — guarantees the structured layer always reflects the current state of the file system
+- `source` field as a **unique key** — each document is identified by its full path, preventing duplicates via `INSERT OR IGNORE`
+- `zip_longest` for multi-tenant receipts — robust against mismatched list lengths (3 tenant names, 2 amounts — no crash, gaps filled with `None`)
+- **Adaptive `k` in retriever** — aggregation queries ("list all tenants") automatically receive more candidate documents than point queries
+- `FALLBACK_TO_RAG` as an **explicit string signal** between layers — clean inter-layer communication without exceptions or silent failures
+- 3-level NER fallback ensures every document gets a tenant label: `RegEx → Natasha NLP → filename`
 
 ---
 
 ## 💡 Challenges & Solutions
 
-Именно эти решения отличают production-thinking от tutorial-code.
+These are the decisions that separate production thinking from tutorial code.
 
-### 🔴 Challenge 1: Проблема «Максима Викторовича»
+### 🔴 Challenge 1: The "Maksim Viktorovich" Problem
 
-Natasha NER находила имена — но возвращала **директора арендатора**, а не самого арендатора. «Иванова Максима Викторович» — подписант от имени ООО «Старлит», не арендатор.
+Natasha NER reliably found names — but sometimes returned the **signatory** instead of the tenant. "Ivanov Maksim Viktorovich" is the director signing on behalf of LLC "Starlit", not the tenant itself.
 
-**✅ Solution:** Приоритет `ORG > PER`. Если рядом с якорем «именуемый в дальнейшем Арендатор» есть и организация и физлицо — берём организацию. Стоп-список ролей: «директор», «бухгалтер», «ИФНС», «МВД». Физлицо — только если организации нет совсем.
-
----
-
-### 🔴 Challenge 2: Excel нельзя резать
-
-`RecursiveCharacterTextSplitter` режет все документы на чанки по 1500 символов. Для финансового акта это катастрофа: «Заказчик: ИП Петров» в одном чанке, «Итого к оплате: 18 800 руб./мес.» — в другом. Модель видит цифру без контекста.
-
-**✅ Solution:** Excel-файлы хранятся **целиком**, без нарезки. Только `.docx` и `.txt` проходят через сплиттер. Целостность финансовых таблиц гарантирована.
+**✅ Solution:** `ORG > PER` priority. When both an organization and a person appear near the anchor phrase "hereinafter referred to as Tenant", we take the organization. Role stop-list: "director", "accountant", "IFNS", "MVD". A person is extracted only if no organization is found.
 
 ---
 
-### 🔴 Challenge 3: Тупиковые ответы «данных нет»
+### 🔴 Challenge 2: Excel Cannot Be Split
 
-SQL не всегда содержит сумму (`amount = NULL` — парсер не извлёк цифру из текста договора). Наивная система ответила бы «данных нет».
+`RecursiveCharacterTextSplitter` cuts every document into 1,500-character chunks. For a financial act this is catastrophic: "Customer: IP Petrov" lands in one chunk, "Total due: 18,800 RUB" in another. The model sees a number with no name attached.
 
-**✅ Solution:** Автоматический fallback `SQL → RAG`. Если SQL возвращает `FALLBACK_TO_RAG` — система молча переключается и ищет «арендная плата» в тексте документа. Пользователь всегда получает ответ.
-
----
-
-### 🔴 Challenge 4: Чужие документы в контексте
-
-Без фильтрации при вопросе про Антохина в контекст попадали договоры Маркова арендуещго по ул.Ленина 115, а также счета и квитанции с другого адреса по ул. Мира 311. LLM путалась и давала неверные ответы.
-
-**✅ Solution:** Фильтр по арендатору применяется **до поиска**, не после. BM25 и Vector работают только по документам нужного арендатора. Изоляция контекста на уровне retriever.
+**✅ Solution:** Excel files are stored **whole**, without chunking. Only `.docx` and `.txt` files go through the splitter. Financial table integrity is guaranteed.
 
 ---
 
-### 🔴 Challenge 5: Квитанции с несколькими плательщиками
+### 🔴 Challenge 3: Dead-end "No Data" Responses
 
-Один файл квитанции содержит 4-5 арендаторов. «Один файл = одна запись» в SQLite делает невозможным точный поиск по конкретному плательщику.
+SQL does not always contain a monetary amount (`amount = NULL` — the parser did not extract a figure from the contract body). A naive system would respond "data not found".
 
-**✅ Solution:** Отдельная таблица `receipt_entries`. Каждый плательщик — отдельная строка с суммой и периодом. `zip_longest` защищает от несовпадения длин списков.
+**✅ Solution:** Automatic `SQL → RAG` fallback. When SQL returns `FALLBACK_TO_RAG`, the system silently switches and searches the contract text for "rental payment". The user always receives an answer.
 
 ---
 
-## 📊 Парсинг документов
+### 🔴 Challenge 4: Foreign Documents in Context
 
-**7 типов с отдельными парсерами:**
+Without filtering, a query about Antokhin would pull in Markov's contracts from Lenina 115 and invoices from a different property on Mira 311. The LLM would mix up data from different tenants and addresses.
 
-| Тип | Формат | Извлекается |
-|-----|--------|-------------|
-| `lease_contract` | .docx | арендатор, адрес, офис, год |
-| `act_excel` | .xls/.xlsx | арендатор, сумма, период |
-| `invoice_excel` | .xls/.xlsx | покупатель, сумма |
-| `invoice_docx` | .docx | покупатель, офисы, сумма |
-| `receipt` | .docx | все плательщики + суммы |
-| `utility_invoice` | .docx | офисы, коммунальные суммы |
-| `agreement_termination` | .docx | арендатор, дата расторжения |
+**✅ Solution:** Tenant filter applied **before search**, not after. BM25 and Vector operate only on documents belonging to the queried tenant. Context isolation enforced at the retriever level.
 
-**3-уровневый fallback при извлечении арендатора:**
+---
+
+### 🔴 Challenge 5: Multi-tenant Receipt Files
+
+A single receipt file contains 4–5 tenants. A "one file = one record" approach in SQLite makes it impossible to query a specific payer's amount.
+
+**✅ Solution:** A dedicated `receipt_entries` table. Each payer gets its own row with amount and period. `zip_longest` guards against mismatched list lengths.
+
+---
+
+## 📊 Document Parsing
+
+**7 document types, each with a dedicated parser:**
+
+| Type | Format | Extracted fields |
+|------|--------|-----------------|
+| `lease_contract` | .docx | tenant, address, office, year |
+| `act_excel` | .xls/.xlsx | tenant, amount, period |
+| `invoice_excel` | .xls/.xlsx | buyer, amount |
+| `invoice_docx` | .docx | buyer, offices, amount |
+| `receipt` | .docx | all payers + amounts |
+| `utility_invoice` | .docx | offices, utility amounts |
+| `agreement_termination` | .docx | tenant, termination date |
+
+**3-level tenant extraction fallback:**
 ```
-1. RegEx  →  быстро, точно для типовых форм
-2. Natasha NLP  →  гибко, для нестандартных формулировок  
-3. Имя файла  →  крайний случай, лучше чем «НЕ ОПРЕДЕЛЁН»
+1. RegEx       →  fast, precise for standard clause forms
+2. Natasha NLP →  flexible, handles non-standard phrasing
+3. Filename    →  last resort, better than "UNDEFINED"
 ```
 
 ---
 
-## 🛠 Технологический стек
+## 🛠 Tech Stack
 
 ```
 LLM            OpenAI gpt-5-nano
@@ -171,75 +195,75 @@ Embeddings     text-embedding-3-small
 Vector DB      ChromaDB
 Keyword        BM25 (rank-bm25)
 Structured     SQLite
-NER            Natasha (русскоязычный стандарт)
-Reranker       Cohere rerank-multilingual-v3.0  ← готов, pending key
+NER            Natasha (Russian-language NER standard)
+Reranker       Cohere rerank-multilingual-v3.0  ← ready, trial key unsupported
 Framework      LangChain (classic + community)
 Documents      python-docx · openpyxl · xlrd
 ```
 
 ---
 
-## 🗺 Дорожная карта
+## 🗺 Roadmap
 
 ```
-✅  Уровень 1    RAG из туториала
-✅  Уровень 2    Реальные данные (343 файла, 7 типов)
-✅  Уровень 3    Гибридный поиск BM25 + Vector
-✅  Уровень 4    Метаданные + контекстная фильтрация
-✅  Уровень 5    Router + SQL-слой для фактовых запросов
-⏳  Уровень 6    Cohere Reranker  ← инфраструктура готова работает только с API Cohere(Триал не подходит)
-⏳  Уровень 7    Semantic Chunking — нарезка по логике абзацев, не по символам
-⏳  Уровень 8    Evaluation Pipeline — RAGAS метрики (precision/recall/faithfulness)
-⏳  Уровень 9    Local LLMs через QLoRA под юридический домен
-                  → сравнение RAG vs Fine-tuned модели будет здесь
+✅  Level 1    Basic RAG from tutorial
+✅  Level 2    Real unstructured data (343 files, 7 document types)
+✅  Level 3    Hybrid search BM25 + Vector
+✅  Level 4    Metadata extraction + context filtering
+✅  Level 5    Router + SQL layer for factual queries
+⏳  Level 6    Cohere Reranker  ← infrastructure ready, requires paid API key
+⏳  Level 7    Semantic Chunking — split by logical paragraph blocks, not character count
+⏳  Level 8    Evaluation Pipeline — RAGAS metrics (precision / recall / faithfulness)
+⏳  Level 9    Local LLMs via QLoRA fine-tuning for the legal domain
+                → RAG vs fine-tuned model comparison coming here
 ```
 
-> Уровни 7 и 8 не требуют переписывания системы — при текущем скелете кода это замена одного сплиттера и добавление одного модуля оценки.
+> Levels 7 and 8 require no architectural rewrite — semantic chunking is a single splitter swap; evaluation is a single added module.
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
 ```bash
-# Клонировать
-git clone https://github.com/ваш-username/rag-rent-assistant
-cd rag-rent-assistant
+# Clone
+git clone https://github.com/your-username/hybrid-rag-lease-analysis
+cd hybrid-rag-lease-analysis
 
-# Зависимости
+# Install dependencies
 pip install -r requirements.txt
 
-# Настроить ключи
+# Configure keys
 cp .env.example .env
-# Добавить: OPENAI_API_KEY и опционально COHERE_API_KEY
+# Add: OPENAI_API_KEY and optionally COHERE_API_KEY
 ```
 
-**Запуск:** ячейки ноутбука строго по порядку `0 → 1 → 2 → ... → 9`
+**Run:** execute notebook cells strictly in order `0 → 1 → 2 → ... → 9`
 
 ```python
-# Примеры запросов
-ask("Кто арендует Мира 144?")
-ask("Условия расторжения с Милославской")
-ask("Площадь помещения Точка Опоры")
+# Example queries
+ask("Who rents at Lenina 115?")
+ask("Termination conditions for Ivanov")
+ask("Floor area for Starlit")
 ```
 
-> ⚠️ Документы и `knowledge.db` в репозиторий не включены — персональные данные арендаторов.
+> ⚠️ Documents and `knowledge.db` are excluded from the repository — they contain personal tenant data.
 
 ---
 
-## 👤 Об авторе
+## 👤 About
 
-Переход: **юридическая практика → LLM Engineering**.
+Career path: **legal practice → LLM Engineering**.
 
-Этот проект — точка пересечения двух миров. Понимание юридических документов изнутри позволило построить парсер который не путает арендатора с его бухгалтером. Понимание LLM-архитектур позволило не останавливаться на первом рабочем прототипе.
+This project sits at the intersection of two domains. Understanding legal documents from the inside made it possible to build a parser that does not confuse a tenant with their accountant. Understanding LLM architecture meant not stopping at the first working prototype.
 
-Прошёл полный цикл: реальные данные → реальные проблемы → реальные решения. Не туториал.
+Full cycle completed: real data → real problems → real solutions. Not a tutorial.
 
-**Текущий вектор:** Fine-tuning · LoRA / QLoRA · Local LLMs
+**Current focus:** Fine-tuning · LoRA / QLoRA · Local LLMs
 
 ---
 
 <div align="center">
 
-Если проект оказался полезным или интересным — ⭐ приветствуется
+If you found this project useful or interesting — ⭐ is welcome
 
 </div>
