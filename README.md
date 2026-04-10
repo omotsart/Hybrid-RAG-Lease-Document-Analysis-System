@@ -29,11 +29,11 @@ __English__ | [__Русский__](README.ru.md)
 
 > How do you instantly find an indexation clause across 800+ lease agreements — without spending weekends reading documents?
 
-This project automates property management workflows, guaranteeing **100% accuracy on financial data** by separating logic layers: facts go to SQL, semantics go to vector search.
+This project automates property management workflows, guaranteeing **100% accuracy on financial data** by separating logic layers: facts go to SQL, semantics go to vector search
 
-Standard tutorial RAG breaks on the very first real document. The same person appears in five different forms: "IP Ivanova", "Ivanova V.V.", "Ivanova" — one tenant or three? Vector search cannot answer "how much does Petrov pay?" — it retrieves similar text, not exact figures.
+Standard tutorial RAG breaks on the very first real document. The same person appears in five different forms: "IP Ivanova", "Ivanova V.V.", "Ivanova" — one tenant or three? Vector search cannot answer "how much does Petrov pay?" — it retrieves similar text, not exact figures
 
-This is what happens **when naive RAG meets reality**.
+Hybrid RAG transforms a neural network into a meticulous legal analyst, who then bases each fact on independent sources: a database and the original text.
 
 ---
 
@@ -211,7 +211,7 @@ Documents      python-docx · openpyxl · xlrd
 ✅  Level 3    Hybrid search BM25 + Vector
 ✅  Level 4    Metadata extraction + context filtering
 ✅  Level 5    Router + SQL layer for factual queries
-⏳  Level 6    Cohere Reranker  ← infrastructure ready, requires paid API key
+✅  Level 6    Cohere Reranker  ← infrastructure ready, requires paid API key
 ⏳  Level 7    Semantic Chunking — split by logical paragraph blocks, not character count
 ⏳  Level 8    Evaluation Pipeline — RAGAS metrics (precision / recall / faithfulness)
 ⏳  Level 9    Local LLMs via QLoRA fine-tuning for the legal domain
