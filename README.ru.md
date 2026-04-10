@@ -223,7 +223,7 @@ Documents      python-docx · openpyxl · xlrd
 ---
 
 ## 🚀 Быстрый старт
-
+> **Среда запуска:** Jupyter Notebook · Anaconda (Python 3.10+)
 ```bash
 # Клонировать
 git clone https://github.com/your-username/hybrid-rag-lease-analysis
