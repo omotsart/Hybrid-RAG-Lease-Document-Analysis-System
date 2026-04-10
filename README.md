@@ -246,17 +246,17 @@ ask("Termination conditions for Ivanov")
 ask("Floor area for Starlit")
 ```
 
-> ⚠️ Documents and `knowledge.db` are excluded from the repository — they contain personal tenant data.
+> ⚠️ Documents and `knowledge.db` are excluded from the repository — they contain personal tenant data
 
 ---
 
 ## 👤 About
 
-Career path: **legal practice → LLM Engineering**.
+Career path: **legal practice → LLM Engineering**
 
-This project sits at the intersection of two domains. Understanding legal documents from the inside made it possible to build a parser that does not confuse a tenant with their accountant. Understanding LLM architecture meant not stopping at the first working prototype.
+This project sits at the intersection of two domains. Understanding legal documents from the inside made it possible to build a parser that does not confuse a tenant with their accountant. Understanding LLM architecture meant not stopping at the first working prototype
 
-Full cycle completed: real data → real problems → real solutions. Not a tutorial.
+Full cycle completed: real data → real problems → real solutions. Not a tutorial
 
 **Current focus:** Fine-tuning · LoRA / QLoRA · Local LLMs
 
